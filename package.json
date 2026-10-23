@@ -1,0 +1,19 @@
+{
+  "name": "messagemission",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LINE風メッセージゲーム「あとで知ったこと」",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "mock": "MOCK=1 node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/U7AH66/Messagemission.git"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.1.0"
+  }
+}

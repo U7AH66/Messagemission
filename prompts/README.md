@@ -45,4 +45,4 @@ LINE風メッセージゲーム。プレイヤーは主人公として自由に�
 - `truth` `hidden` `clues` `endings` `hindsight` はクライアントに送らない。
 - シナリオJSONはプレイ中ずっと毎回プロンプトに入れる。入れないと設定がブレる。
 - 評価は演じてるAIにやらせない。自分の話に甘くなる。
-- 推奨 temperature：1_preset は高め（1.0前後）、2_scenario は中くらい、3_play は中くらい、4・5 は低め。
+- 今のモデルは temperature を指定できないので、ばらつきはサイコロ（seeds.json）で出す。考える深さは effort で調整する：1_preset と 3_play は medium、2_scenario と 5_ending は high、4_chapter_eval は low。

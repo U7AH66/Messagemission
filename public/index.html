@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>あとで知ったこと</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- タイトル -->
+    <section id="screen-title" class="screen active">
+      <div class="title-wrap">
+        <h1>あとで知ったこと</h1>
+        <p class="sub">あのLINE、あとで読み返したら<br>全部意味がわかった。</p>
+
+        <button class="btn primary" data-action="omakase">おまかせで遊ぶ</button>
+
+        <details class="mode">
+          <summary>大枠を自分で決める</summary>
+          <p class="note">ジャンル・相手・雰囲気など。真相はAIが裏で決めるからネタバレなし。</p>
+          <textarea id="outline" rows="3" placeholder="例：元カノとその妹。大学4年の冬。ちょっと怖い感じ"></textarea>
+          <button class="btn" data-action="outline">この枠でカードを作る</button>
+        </details>
+
+        <details class="mode">
+          <summary>全部自分で作る（友達に遊ばせる用）</summary>
+          <label>ジャンル<input id="c-genre" placeholder="家族"></label>
+          <label>雰囲気<input id="c-tone" placeholder="泣ける"></label>
+          <label>登場人物<input id="c-characters" placeholder="父と母"></label>
+          <label>舞台・時期<input id="c-setting" placeholder="社会人5年目の春〜秋"></label>
+          <label>あらすじ<textarea id="c-free" rows="2"></textarea></label>
+          <label>真相<textarea id="c-truth" rows="2" placeholder="父が喉の手術で声を失っていた"></textarea></label>
+          <button class="btn" data-action="custom">この設定で始める</button>
+        </details>
+      </div>
+    </section>
+
+    <!-- カード選択 -->
+    <section id="screen-cards" class="screen">
+      <header class="bar">
+        <button class="icon" data-action="home" aria-label="戻る">‹</button>
+        <h2>どの話にする？</h2>
+        <button class="icon" data-action="reroll" aria-label="引き直す">↻</button>
+      </header>
+      <div id="cards" class="cards"></div>
+    </section>
+
+    <!-- トーク -->
+    <section id="screen-chat" class="screen">
+      <header class="bar chat-bar">
+        <button class="icon" data-action="home" aria-label="タイトルへ">‹</button>
+        <div class="chat-title">
+          <h2 id="room-name"></h2>
+          <span id="chapter-label"></span>
+        </div>
+        <span class="icon"></span>
+      </header>
+      <nav id="rooms" class="rooms"></nav>
+      <div id="messages" class="messages"></div>
+      <form id="composer" class="composer">
+        <input id="input" autocomplete="off" placeholder="メッセージを入力">
+        <button type="submit" aria-label="送信">➤</button>
+      </form>
+      <div id="review-bar" class="review-bar" hidden>
+        <button class="btn" data-action="back-to-ending">結果にもどる</button>
+      </div>
+    </section>
+
+    <!-- 結末 -->
+    <section id="screen-ending" class="screen">
+      <div id="ending" class="ending"></div>
+    </section>
+
+    <!-- 章末評価シート -->
+    <div id="sheet" class="sheet" hidden>
+      <div class="sheet-body" id="sheet-body"></div>
+    </div>
+
+    <div id="loading" class="loading" hidden>
+      <div class="spinner"></div>
+      <p id="loading-text"></p>
+    </div>
+    <div id="toast" class="toast" hidden></div>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
