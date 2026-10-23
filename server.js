@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
-import { GameError, makeCards, startGame, sendMessage, nextChapter, finishGame } from "./lib/game.js";
+import { GameError, makeCards, startGame, sendMessage, nextChapter, finishGame, resumeGame } from "./lib/game.js";
 
 const PUBLIC_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "public");
 const PORT = Number(process.env.PORT) || 3000;
@@ -14,6 +14,7 @@ const routes = {
   "/api/send": sendMessage,
   "/api/next": nextChapter,
   "/api/finish": finishGame,
+  "/api/resume": resumeGame,
 };
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css" };

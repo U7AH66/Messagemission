@@ -1,3 +1,5 @@
+import { backend } from "./backend.js";
+
 const $ = (sel) => document.querySelector(sel);
 
 const state = {
@@ -40,16 +42,25 @@ async function api(path, body, loadingText) {
     $("#loading").hidden = false;
   }
   try {
-    const res = await fetch(`/api/${path}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "エラーが起きた");
-    return data;
+    return await backend[path](body);
   } finally {
     $("#loading").hidden = true;
+  }
+}
+
+// 遊びかけのゲームを覚えておく（タイトルの「続きから」用）
+function rememberGame(id) {
+  try {
+    if (id) localStorage.setItem("lastGameId", id);
+    else localStorage.removeItem("lastGameId");
+  } catch {}
+}
+
+function lastGameId() {
+  try {
+    return localStorage.getItem("lastGameId");
+  } catch {
+    return null;
   }
 }
 
@@ -112,12 +123,48 @@ async function start(body) {
       ending: null,
       highlights: null,
     });
+    rememberGame(data.gameId);
     renderRooms();
     show("chat");
     receive(data);
   } catch (err) {
     toast(err.message);
   }
+}
+
+async function resume() {
+  try {
+    const data = await api("resume", { gameId: lastGameId() }, "読み込み中…");
+    Object.assign(state, {
+      gameId: data.gameId,
+      scenario: data.scenario,
+      chapter: data.chapter,
+      logs: data.logs,
+      room: data.scenario.characters[0].id,
+      unread: new Set(),
+      ending: data.result,
+      highlights: null,
+    });
+    $("#composer").hidden = false;
+    $("#review-bar").hidden = true;
+    if (data.result) {
+      renderEnding();
+      show("ending");
+      return;
+    }
+    renderRooms();
+    show("chat");
+    setBusy(false);
+    if (data.chapterEnded) showEvaluation(data.evaluation, data.finished);
+  } catch (err) {
+    rememberGame(null);
+    updateResumeButton();
+    toast(err.message);
+  }
+}
+
+function updateResumeButton() {
+  $("[data-action=resume]").hidden = !lastGameId();
 }
 
 // ---------- トーク ----------
@@ -350,7 +397,7 @@ function renderEnding() {
   if (r.closing) wrap.append(el("p", "closing", r.closing));
 
   const again = el("button", "btn", "もう一回あそぶ");
-  again.addEventListener("click", () => show("title"));
+  again.addEventListener("click", actions.home);
   wrap.append(again);
 }
 
@@ -398,9 +445,10 @@ const actions = {
     start({ custom });
   },
   reroll: () => requestCards(state.cardsRequest ?? {}),
+  resume,
   home: () => {
-    if (state.gameId && state.scenario && !state.ending && !confirm("タイトルに戻る？進行中の話は消えるよ")) return;
     $("#sheet").hidden = true;
+    updateResumeButton();
     show("title");
   },
   "back-to-ending": backToEnding,
@@ -411,3 +459,4 @@ document.addEventListener("click", (e) => {
   if (action) actions[action]();
 });
 $("#composer").addEventListener("submit", sendCurrent);
+updateResumeButton();

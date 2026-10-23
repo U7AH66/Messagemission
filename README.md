@@ -26,14 +26,29 @@ npm run mock
 | `PORT` | ポート（デフォルト 3000） |
 | `MOCK` | `1` にすると固定レスポンスで動く |
 
+## claude.ai版（スマホで遊ぶ用）
+
+サーバーなしで、claude.aiのページとして動く版もある。AIはページを開いた人のClaudeプランで動くから、APIキーはいらない。
+
+公開中：https://claude.ai/artifact/Q8reYiUdYSMHiFVZWRMLsM （今は持ち主だけが開ける）
+
+```sh
+npm run build:artifact   # dist/artifact.html を作る
+```
+
+`lib/engine.js`、`artifact/backend.js`、`public/` と `prompts/` を1ファイルにまとめて、AI呼び出しをclaude.aiの仕組みに差し替えてる。
+サーバー版と違って真相がページの中に入るから、開発者ツールで覗けばネタバレできる。ゲームの途中経過はそのブラウザの中に保存される。
+
 ## 構成
 
 ```
 server.js          HTTPサーバー（/api/* と public/ の配信）
-lib/game.js        ゲーム進行。サイコロ、状態管理、真相をクライアントに出さない処理
+lib/engine.js      ゲーム進行の本体。サイコロ、状態管理、真相をクライアントに出さない処理
+lib/game.js        サーバー版の保存先とAI呼び出しをエンジンにつなぐ
 lib/claude.js      prompts/ を読んで Claude API を呼び、JSONを返す
 lib/mock.js        MOCK=1 のときの固定レスポンス
-public/            画面（素のHTML/CSS/JS）
+public/            画面（素のHTML/CSS/JS）。backend.js はサーバー版のAPI呼び出し
+artifact/          claude.ai版のバックエンドとビルドスクリプト
 prompts/           AIへの指示書一式とサイコロの中身
 data/history.json  遊んだ話の真相の要約（次のプリセットでかぶらないようにする）
 ```
